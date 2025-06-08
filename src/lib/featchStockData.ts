@@ -152,7 +152,7 @@ export async function searchStocksWithQuotes(query: string): Promise<Stock[]> {
             change: quote.change,
             changePercent: quote.changePercent,
           };
-        } catch (error) {
+        } catch {
          
           return stock;
         }

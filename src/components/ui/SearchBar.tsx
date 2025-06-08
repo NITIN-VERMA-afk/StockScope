@@ -50,7 +50,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         try {
           const popularStocks = await getPopularStocks();
           setFilteredStocks(popularStocks.slice(0, 8));
-        } catch (err) {
+        } catch  {
           setError("Failed to load popular stocks");
           setFilteredStocks([]);
         } finally {
@@ -62,7 +62,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         try {
           const results = await searchStocks(searchQuery);
           setFilteredStocks(results.slice(0, 10));
-        } catch (err) {
+        } catch  {
           setError("Failed to search stocks");
           setFilteredStocks([]);
         } finally {

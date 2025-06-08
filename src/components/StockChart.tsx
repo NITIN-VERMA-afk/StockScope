@@ -1,24 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { 
- 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   Area,
-  AreaChart
+  AreaChart,
 } from "recharts";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Activity, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Activity,
   Calendar,
   DollarSign,
-  Loader2
+  Loader2,
 } from "lucide-react";
+import { TooltipProps } from "recharts";
 
 type ChartPoint = {
   date: string;
@@ -30,26 +30,24 @@ interface StockChartProps {
   stockName?: string;
 }
 
-
 import { fetchStockData } from "@/lib/featchStockData";
 
 const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
   const [data, setData] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState('1M');
+  const [timeRange, setTimeRange] = useState("1M");
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       setError(null);
       try {
-        
         const chartData = await fetchStockData(symbol);
         setData(chartData);
       } catch (err) {
         setError("Failed to load stock chart data");
-        console.log(err)
+        console.log(err);
       } finally {
         setLoading(false);
       }
@@ -60,39 +58,42 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
     }
   }, [symbol]);
 
- 
   const calculateChange = () => {
-    if (data.length < 2) return { change: 0, changePercent: 0, isPositive: true };
-    
+    if (data.length < 2)
+      return { change: 0, changePercent: 0, isPositive: true };
+
     const firstPrice = data[0].close;
     const lastPrice = data[data.length - 1].close;
     const change = lastPrice - firstPrice;
     const changePercent = (change / firstPrice) * 100;
-    
+
     return {
       change,
       changePercent,
-      isPositive: change >= 0
+      isPositive: change >= 0,
     };
   };
 
   const { change, changePercent, isPositive } = calculateChange();
   const currentPrice = data.length > 0 ? data[data.length - 1].close : 0;
 
-  
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-            {new Date(label).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric'
+            {new Date(label).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
             })}
           </p>
           <p className="text-lg font-bold text-gray-900 dark:text-white">
-            ${payload[0].value.toFixed(2)}
+            ${payload[0].value?.toFixed(2)}
           </p>
         </div>
       );
@@ -101,12 +102,12 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
   };
 
   const timeRanges = [
-    { label: '1D', value: '1D' },
-    { label: '1W', value: '1W' },
-    { label: '1M', value: '1M' },
-    { label: '3M', value: '3M' },
-    { label: '1Y', value: '1Y' },
-    { label: 'All', value: 'ALL' }
+    { label: "1D", value: "1D" },
+    { label: "1W", value: "1W" },
+    { label: "1M", value: "1M" },
+    { label: "3M", value: "3M" },
+    { label: "1Y", value: "1Y" },
+    { label: "All", value: "ALL" },
   ];
 
   if (loading) {
@@ -114,7 +115,9 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8">
         <div className="flex flex-col items-center justify-center h-64">
           <Loader2 className="h-8 w-8 text-blue-500 animate-spin mb-4" />
-          <p className="text-gray-600 dark:text-gray-300">Loading chart data...</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            Loading chart data...
+          </p>
         </div>
       </div>
     );
@@ -176,7 +179,7 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:items-end">
             <div className="flex items-center space-x-2 mb-1">
               <DollarSign className="h-5 w-5 text-gray-400" />
@@ -184,16 +187,20 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
                 ${currentPrice.toFixed(2)}
               </span>
             </div>
-            <div className={`flex items-center space-x-1 ${
-              isPositive ? 'text-green-600' : 'text-red-600'
-            }`}>
+            <div
+              className={`flex items-center space-x-1 ${
+                isPositive ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {isPositive ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
               <span className="font-medium">
-                {isPositive ? '+' : ''}{change.toFixed(2)} ({isPositive ? '+' : ''}{changePercent.toFixed(2)}%)
+                {isPositive ? "+" : ""}
+                {change.toFixed(2)} ({isPositive ? "+" : ""}
+                {changePercent.toFixed(2)}%)
               </span>
             </div>
           </div>
@@ -210,8 +217,8 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
               onClick={() => setTimeRange(range.value)}
               className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
                 timeRange === range.value
-                  ? 'bg-blue-500 text-white'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? "bg-blue-500 text-white"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
               {range.label}
@@ -220,44 +227,46 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
         </div>
       </div>
 
-      
       <div className="p-6">
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <AreaChart
+              data={data}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
               <defs>
                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop 
-                    offset="5%" 
-                    stopColor={isPositive ? "#10b981" : "#ef4444"} 
+                  <stop
+                    offset="5%"
+                    stopColor={isPositive ? "#10b981" : "#ef4444"}
                     stopOpacity={0.3}
                   />
-                  <stop 
-                    offset="95%" 
-                    stopColor={isPositive ? "#10b981" : "#ef4444"} 
+                  <stop
+                    offset="95%"
+                    stopColor={isPositive ? "#10b981" : "#ef4444"}
                     stopOpacity={0.05}
                   />
                 </linearGradient>
               </defs>
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#e5e7eb" 
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#e5e7eb"
                 strokeOpacity={0.5}
               />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 tick={{ fontSize: 12, fill: "#6b7280" }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric' 
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
                   });
                 }}
               />
-              <YAxis 
+              <YAxis
                 domain={["dataMin - 5", "dataMax + 5"]}
                 tick={{ fontSize: 12, fill: "#6b7280" }}
                 axisLine={false}
@@ -273,11 +282,11 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
                 strokeWidth={2}
                 fill="url(#colorGradient)"
                 dot={false}
-                activeDot={{ 
-                  r: 4, 
+                activeDot={{
+                  r: 4,
                   fill: isPositive ? "#10b981" : "#ef4444",
                   strokeWidth: 2,
-                  stroke: "#ffffff"
+                  stroke: "#ffffff",
                 }}
               />
             </AreaChart>

@@ -1,7 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ChartPoint } from '@/lib/featchStockData';
 
+
+type AlphaVantageTimeSeriesResponse = {
+  "Time Series (Daily)": {
+    [date: string]: {
+      "1. open": string;
+      "2. high": string;
+      "3. low": string;
+      "4. close": string;
+      "5. volume": string;
+    };
+  };
+};
+
 const API_KEY = process.env.API_KEY;
+
 
 export const stockApi = createApi({
   reducerPath: 'stockApi',
@@ -10,7 +24,7 @@ export const stockApi = createApi({
     getStockChart: builder.query<ChartPoint[], string>({
       query: (symbol) =>
         `?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`,
-      transformResponse: (response: any): ChartPoint[] => {
+      transformResponse: (response: AlphaVantageTimeSeriesResponse): ChartPoint[] => {
         const timeSeries = response['Time Series (Daily)'];
         if (!timeSeries) throw new Error('Invalid symbol');
 
