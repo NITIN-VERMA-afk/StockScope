@@ -58,7 +58,7 @@ export default function NotFound() {
   const quickLinks = [
     { 
       title: "Market Overview", 
-      description: "View today's market performance",
+      description: "View todays market performance",
       icon: TrendingUp,
       href: "/market"
     },
@@ -138,109 +138,15 @@ export default function NotFound() {
               </h1>
             </div>
             <p className="text-lg text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-              The stock data you're looking for seems to have moved to a different market. 
+              The stock data you&apos;re looking for seems to have moved to a different market. 
               Let's get you back on track!
             </p>
           </motion.div>
 
-          {/* Search bar */}
-          <motion.div variants={fadeInUp} className="max-w-md mx-auto">
-            <Card className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700">
-              <CardContent className="p-0">
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-                    <Input
-                      placeholder="Search for stocks (e.g., AAPL, GOOGL)"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600"
-                    />
-                  </div>
-                  <Button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => {
-                      if (searchQuery.trim()) {
-                        window.location.href = `/stock/${searchQuery.toUpperCase()}`;
-                      }
-                    }}
-                  >
-                    <Search size={18} />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
 
-          {/* Popular stocks */}
-          <motion.div variants={fadeInUp} className="space-y-4">
-            <h2 className="text-lg font-medium text-slate-700 dark:text-slate-200">
-              Or try these popular stocks:
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2">
-              {popularStocks.map((stock, index) => (
-                <motion.div
-                  key={stock.symbol}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  {...scaleOnHover}
-                >
-                  <Link href={`/stock/${stock.symbol}`}>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-slate-300 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all duration-200"
-                    >
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">
-                        {stock.symbol}
-                      </span>
-                      <span className="text-slate-500 dark:text-slate-400 ml-1 hidden sm:inline">
-                        {stock.name}
-                      </span>
-                    </Button>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+         
 
-          {/* Quick links */}
-          <motion.div variants={fadeInUp} className="space-y-4">
-            <h2 className="text-lg font-medium text-slate-700 dark:text-slate-200">
-              Quick Navigation:
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-              {quickLinks.map((link, index) => (
-                <motion.div
-                  key={link.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  {...scaleOnHover}
-                >
-                  <Link href={link.href}>
-                    <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-slate-200 dark:border-slate-700 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-200 cursor-pointer group">
-                      <CardContent className="p-0 text-center space-y-2">
-                        <div className="flex justify-center">
-                          <link.icon 
-                            size={24} 
-                            className="text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-200" 
-                          />
-                        </div>
-                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-                          {link.title}
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                          {link.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+       
 
           {/* Home button */}
           <motion.div variants={fadeInUp}>

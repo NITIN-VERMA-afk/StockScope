@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   Search,
   TrendingUp,
@@ -10,7 +11,6 @@ import {
   Calendar,
   ExternalLink,
   RefreshCw,
-  Filter,
   Clock,
   Building,
   Building2,
@@ -19,17 +19,16 @@ import {
   X,
 } from "lucide-react";
 
-// Import your API functions
 import {
   searchStocksWithQuotes,
   getPopularStocks,
   fetchStockNews,
   formatNewsDate,
   Stock,
-  NewsArticle
-} from "@/lib/featchStockData"; 
+  NewsArticle,
+} from "@/lib/featchStockData";
 
-// Stock Search Bar Component
+
 interface StockSearchBarProps {
   onSelectStock?: (stock: Stock) => void;
   placeholder?: string;
@@ -61,8 +60,8 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         setIsLoading(true);
         setError(null);
         try {
-          // Use real API for popular stocks
-          const popularStocks = await getPopularStocks(true); // Use Finnhub API
+          
+          const popularStocks = await getPopularStocks(true); 
           setFilteredStocks(popularStocks.slice(0, 8));
         } catch (err) {
           console.error("Failed to load popular stocks:", err);
@@ -75,8 +74,8 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         setIsLoading(true);
         setError(null);
         try {
-          // Use real API for stock search
-          const results = await searchStocksWithQuotes(searchQuery, true); // Use Finnhub API
+          
+          const results = await searchStocksWithQuotes(searchQuery, true); 
           setFilteredStocks(results.slice(0, 10));
         } catch (err) {
           console.error("Failed to search stocks:", err);
@@ -215,7 +214,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         )}
       </div>
 
-      {/* Dropdown Results */}
+      
       <AnimatePresence>
         {isOpen && (filteredStocks.length > 0 || isLoading || error) && (
           <motion.div
@@ -226,7 +225,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
             className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden"
           >
             <div className="max-h-96 overflow-y-auto">
-              {/* Header */}
+             
               <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                 <div className="flex items-center justify-between text-sm text-gray-600">
                   <span className="font-medium">
@@ -238,7 +237,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                 </div>
               </div>
 
-              {/* Loading State */}
+              
               {isLoading && (
                 <div className="px-4 py-8 text-center">
                   <Loader2 className="h-8 w-8 text-blue-500 mx-auto mb-2 animate-spin" />
@@ -246,7 +245,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                 </div>
               )}
 
-              {/* Error State */}
+             
               {error && (
                 <div className="px-4 py-8 text-center">
                   <div className="text-red-500 mb-2">⚠️</div>
@@ -260,7 +259,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                 </div>
               )}
 
-              {/* Stock Results */}
+              
               {!isLoading &&
                 !error &&
                 filteredStocks.map((stock, index) => {
@@ -293,9 +292,11 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                               <span className="font-bold text-gray-900 text-lg">
                                 {stock.symbol}
                               </span>
-                              {(stock.region || stock.currency || stock.sector) && (
+                              {(stock.region ||
+                                stock.currency ||
+                                stock.sector) && (
                                 <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                                  {stock.region || stock.sector} 
+                                  {stock.region || stock.sector}
                                   {stock.currency && ` • ${stock.currency}`}
                                 </span>
                               )}
@@ -306,7 +307,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                           </div>
                         </div>
 
-                        {/* Right Side - Price Info */}
+                        
                         <div className="text-right">
                           <div className="flex items-center space-x-2">
                             <DollarSign className="h-4 w-4 text-gray-400" />
@@ -345,7 +346,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
                 })}
             </div>
 
-            {/* Footer */}
+            
             {!isLoading && !error && filteredStocks.length > 0 && (
               <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
                 <p className="text-xs text-gray-500 text-center">
@@ -357,7 +358,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
         )}
       </AnimatePresence>
 
-      {/* No Results */}
+      
       <AnimatePresence>
         {isOpen &&
           query &&
@@ -385,7 +386,7 @@ const StockSearchBar: React.FC<StockSearchBarProps> = ({
   );
 };
 
-// Main Stock News Component
+
 const StockNewsPage = () => {
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(false);
@@ -401,29 +402,33 @@ const StockNewsPage = () => {
     { value: "merger", label: "M&A", icon: Building },
   ];
 
-  // Load initial news
+ 
+  const loadNews = useCallback(
+    async (symbol?: string, category?: string) => {
+      setLoading(true);
+      setError("");
+      try {
+      
+        const newsData = await fetchStockNews(
+          symbol,
+          category || selectedCategory
+        );
+        setNews(newsData);
+      } catch (error) {
+        console.error("Failed to load news:", error);
+        setError("Failed to load news. Please try again later.");
+        setNews([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [selectedCategory]
+  );
+
+
   useEffect(() => {
     loadNews();
-  }, []);
-
-  const loadNews = async (symbol?: string, category?: string) => {
-    setLoading(true);
-    setError("");
-    try {
-      // Use real API for fetching news
-      const newsData = await fetchStockNews(
-        symbol,
-        category || selectedCategory
-      );
-      setNews(newsData);
-    } catch (error) {
-      console.error("Failed to load news:", error);
-      setError("Failed to load news. Please try again later.");
-      setNews([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [loadNews]);
 
   const handleStockSelect = (stock: Stock) => {
     setSelectedStock(stock);
@@ -464,7 +469,7 @@ const StockNewsPage = () => {
           </p>
         </motion.div>
 
-        {/* Search and Controls */}
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -474,11 +479,13 @@ const StockNewsPage = () => {
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center gap-2 mb-6">
               <Search className="h-5 w-5 text-gray-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Search & Filter</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Search & Filter
+              </h2>
             </div>
-            
+
             <div className="space-y-6">
-              {/* Stock Search Bar */}
+             
               <div className="flex gap-3">
                 <div className="flex-1">
                   <StockSearchBar
@@ -501,13 +508,15 @@ const StockNewsPage = () => {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
                   >
-                    <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                    <RefreshCw
+                      className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>
               </div>
 
-              {/* Category Tabs */}
+             
               <div className="border-b border-gray-200">
                 <div className="flex space-x-8">
                   {categories.map((category) => {
@@ -531,7 +540,7 @@ const StockNewsPage = () => {
                 </div>
               </div>
 
-              {/* Selected Stock Info */}
+             
               {selectedStock && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -551,9 +560,13 @@ const StockNewsPage = () => {
                           <span className="text-sm text-blue-700">
                             ${selectedStock.price.toFixed(2)}
                           </span>
-                          <span className={`text-sm flex items-center gap-1 ${
-                            selectedStock.change >= 0 ? 'text-green-600' : 'text-red-600'
-                          }`}>
+                          <span
+                            className={`text-sm flex items-center gap-1 ${
+                              selectedStock.change >= 0
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
                             {selectedStock.change >= 0 ? (
                               <TrendingUp className="h-3 w-3" />
                             ) : (
@@ -562,14 +575,16 @@ const StockNewsPage = () => {
                             {selectedStock.changePercent.toFixed(2)}%
                           </span>
                         </div>
-                        <p className="text-sm text-blue-700">{selectedStock.name}</p>
+                        <p className="text-sm text-blue-700">
+                          {selectedStock.name}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </motion.div>
               )}
 
-              {/* Error Message */}
+            
               {error && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -588,7 +603,7 @@ const StockNewsPage = () => {
           </div>
         </motion.div>
 
-        {/* News Grid */}
+        
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
@@ -599,7 +614,10 @@ const StockNewsPage = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
+                <div
+                  key={i}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse"
+                >
                   <div className="h-48 bg-gray-200"></div>
                   <div className="p-4">
                     <div className="h-4 bg-gray-200 rounded mb-2"></div>
@@ -617,7 +635,7 @@ const StockNewsPage = () => {
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-             {news.map((article, index) => (
+              {news.map((article, index) => (
                 <motion.div
                   key={article.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -631,16 +649,18 @@ const StockNewsPage = () => {
                   }}
                   className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
                 >
-                  {/* Article Image */}
+                 
                   {article.image && (
                     <div className="relative h-48 overflow-hidden">
-                      <img
+                      <Image
                         src={article.image}
                         alt={article.headline}
+                        width={400}
+                        height={192}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          // Hide image if it fails to load
-                          (e.target as HTMLImageElement).style.display = 'none';
+                         
+                          (e.target as HTMLImageElement).style.display = "none";
                         }}
                       />
                       <div className="absolute top-2 right-2">
@@ -651,9 +671,9 @@ const StockNewsPage = () => {
                     </div>
                   )}
 
-                  {/* Article Content */}
+                  
                   <div className="p-6">
-                    {/* Article Header */}
+                   
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Building className="h-4 w-4 text-gray-500" />
@@ -667,17 +687,15 @@ const StockNewsPage = () => {
                       </div>
                     </div>
 
-                    {/* Article Title */}
                     <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
                       {article.headline}
                     </h3>
 
-                    {/* Article Summary */}
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                       {article.summary}
                     </p>
 
-                    {/* Article Footer */}
+                    
                     <div className="flex items-center justify-between">
                       {article.related && (
                         <div className="flex items-center gap-1">
@@ -686,7 +704,7 @@ const StockNewsPage = () => {
                           </span>
                         </div>
                       )}
-                      
+
                       <a
                         href={article.url}
                         target="_blank"
@@ -717,10 +735,9 @@ const StockNewsPage = () => {
                 No news available
               </h3>
               <p className="text-gray-600 mb-4">
-                {selectedStock 
+                {selectedStock
                   ? `No recent news found for ${selectedStock.symbol}`
-                  : "No news articles found for the selected category"
-                }
+                  : "No news articles found for the selected category"}
               </p>
               <button
                 onClick={handleRefresh}
