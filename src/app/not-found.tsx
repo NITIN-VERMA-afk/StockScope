@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 
 import {
   Home,
-  Search,
   TrendingUp,
   BarChart3,
   AlertCircle,
@@ -87,7 +86,6 @@ export default function NotFound() {
             </motion.div>
           </motion.div>
 
-         
           <motion.div variants={fadeInUp} className="space-y-4">
             <div className="flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300">
               <AlertCircle size={20} />
