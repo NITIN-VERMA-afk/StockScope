@@ -6,7 +6,7 @@ import {
   TrendingUp, 
   Github, 
   ExternalLink, 
-  Mail, 
+
   Twitter, 
   Linkedin,
   ArrowUp,
@@ -131,7 +131,7 @@ const Footer: React.FC = () => {
           </motion.div>
 
           {/* Footer Sections */}
-          {footerSections.map((section, sectionIndex) => (
+          {footerSections.map((section,) => (
             <motion.div 
               key={section.title} 
               variants={itemVariants}

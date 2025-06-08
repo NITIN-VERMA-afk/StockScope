@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { 
-  LineChart, 
-  Line, 
+ 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -31,7 +30,7 @@ interface StockChartProps {
   stockName?: string;
 }
 
-// Import your existing API function
+
 import { fetchStockData } from "@/lib/featchStockData";
 
 const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
@@ -45,11 +44,12 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
       setLoading(true);
       setError(null);
       try {
-        // Use your existing API function
+        
         const chartData = await fetchStockData(symbol);
         setData(chartData);
       } catch (err) {
         setError("Failed to load stock chart data");
+        console.log(err)
       } finally {
         setLoading(false);
       }
@@ -60,7 +60,7 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
     }
   }, [symbol]);
 
-  // Calculate price change
+ 
   const calculateChange = () => {
     if (data.length < 2) return { change: 0, changePercent: 0, isPositive: true };
     
@@ -79,7 +79,7 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
   const { change, changePercent, isPositive } = calculateChange();
   const currentPrice = data.length > 0 ? data[data.length - 1].close : 0;
 
-  // Custom tooltip component
+  
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -100,7 +100,6 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
     return null;
   };
 
-  // Time range buttons
   const timeRanges = [
     { label: '1D', value: '1D' },
     { label: '1W', value: '1W' },
@@ -221,7 +220,7 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
         </div>
       </div>
 
-      {/* Chart */}
+      
       <div className="p-6">
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -291,7 +290,7 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, stockName }) => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-              Today's Range
+              Today&#96;s Range
             </p>
             <p className="text-sm font-semibold text-gray-900 dark:text-white">
               $140.25 - $155.80
