@@ -1,5 +1,5 @@
 "use client";
-
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   TrendingUp,
@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 
 const Home = () => {
+  const [message, setMessage] = useState("");
+
+  const handleClick = () => {
+    setMessage("🚧 Demo coming soon!");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -124,9 +131,9 @@ const Home = () => {
               variants={itemVariants}
               className="max-w-3xl mx-auto text-xl text-gray-600 mb-12 leading-relaxed"
             >
-              Get real-time market data, interactive charts&#44; and the latest news
-              for any stock. No login required - start your research in seconds
-              with our powerful dashboard.
+              Get real-time market data, interactive charts&#44; and the latest
+              news for any stock. No login required - start your research in
+              seconds with our powerful dashboard.
             </motion.p>
 
             <motion.div
@@ -148,11 +155,17 @@ const Home = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleClick}
                 className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 flex items-center justify-center"
               >
                 View Demo
                 <ChevronRight className="ml-2 h-5 w-5" />
               </motion.button>
+              {message && (
+                <p className="mt-4 text-center text-gray-600 font-medium">
+                  {message}
+                </p>
+              )}
             </motion.div>
 
             {/* Stats */}
@@ -323,9 +336,9 @@ const Home = () => {
               </h2>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Built for investors who demand professional-grade tools without
-                the complexity. Our platform leverages Alpha Vantage&#96;s reliable
-                market data to provide you with the insights you need to make
-                informed decisions.
+                the complexity. Our platform leverages Alpha Vantage&#96;s
+                reliable market data to provide you with the insights you need
+                to make informed decisions.
               </p>
 
               <div className="space-y-4">

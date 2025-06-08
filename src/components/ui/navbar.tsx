@@ -16,6 +16,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { name: "Home", href: "/" },
   { name: "How It Works", href: "#how-it-works" },
+  { name: "stock news", href: "/stockNews" },
   { name: "API Docs", href: "https://www.alphavantage.co/documentation/" },
   { name: "GitHub", href: "https://github.com/NITIN-VERMA-afk/StockScope" },
   { name: "About", href: "#about" },
